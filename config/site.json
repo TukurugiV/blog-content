@@ -1,0 +1,38 @@
+{
+  "name": "創技 光のサイト",
+  "description": "創技 光が色々とするサイト。",
+  "url": "https://site.tukurugi.uk",
+  "author": {
+    "name": "創技 光",
+    "email": "contact@tukurugi.uk",
+    "twitter": "@Tukurugi_V"
+  },
+  "social": {
+    "twitter": "https://twitter.com/Tukurugi_V",
+    "youtube": "https://youtube.com/@Tukurugi_V",
+    "github": "https://github.com/TukurugiV"
+  },
+  "seo": {
+    "defaultOgImage": "/images/og-default.jpg",
+    "twitterSite": "@Tukurugi_V",
+    "locale": "ja_JP"
+  },
+  "analytics": {
+    "googleAnalytics": "",
+    "microsoftClarity": ""
+  },
+  "features": {
+    "comments": false,
+    "newsletter": false,
+    "search": true,
+    "darkMode": false
+  },
+  "contact": {
+    "email": "contact@tukurugi.uk",
+    "twitter": "@Tukurugi_V",
+    "youtube": "@Tukurugi_V",
+    "phone": ""
+  },
+  "copyright": "© 2025 創技 光. All rights reserved.",
+  "license": "CC BY-SA 4.0"
+}
