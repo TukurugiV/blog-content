@@ -5,7 +5,7 @@ pubDate: 2025-08-01-20:00:00
 author: "創技 光"
 tags: ["自己紹介","ブログについて"]
 draft: false
-cover: "/images/covers/blog/web-trends-2025-cover.jpg"
+cover: "./og-001.png"
 coverAlt: ""
 ---
 
@@ -19,7 +19,3 @@ coverAlt: ""
 
 何かこういう機能あればいいんじゃなーい？
 っていうのがあれば何でも言ってください
-
-    
-
-    aaaa
