@@ -1,7 +1,7 @@
 ---
 title: "サイトを作ったよ という話"
 description: "創技 光がサイトを作ったのでそれについてそっと話す"
-pubDate: "2025-08-02"
+pubDate: "2025-08-01"
 author: "創技 光"
 tags: ["自己紹介","ブログについて"]
 draft: false
