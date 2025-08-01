@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <!-- 背景グラデーション -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4299e1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3182ce;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- パターン -->
+    <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/>
+    </pattern>
+    
+    <!-- フォント設定 -->
+    <style>
+      @import url('https://use.typekit.net/scm4ijj.css');
+      .title-text { 
+        font-family: 'kozuka-gothic-pr6n', sans-serif; 
+        font-weight: 400; 
+        font-style: normal; 
+      }
+      .subtitle-text { 
+        font-family: 'kozuka-gothic-pr6n', sans-serif; 
+        font-weight: 400; 
+        font-style: normal; 
+      }
+    </style>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#dots)" opacity="0.2"/>
+  
+  <!-- デコレーション要素 -->
+  <circle cx="150" cy="150" r="80" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="1050" cy="480" r="100" fill="rgba(255,255,255,0.03)"/>
+  <rect x="0" y="0" width="1200" height="4" fill="rgba(255,255,255,0.3)"/>
+  <rect x="0" y="626" width="1200" height="4" fill="rgba(255,255,255,0.3)"/>
+  
+  <!-- ミニアイコン -->
+  <rect x="80" y="80" width="60" height="60" rx="12" fill="rgba(255,255,255,0.9)"/>
+  <text x="110" y="120" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" fill="#4299e1">光</text>
+  
+  <!-- コレクションラベル -->
+  <rect x="80" y="200" width="120" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+  <text x="140" y="222" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">ブログ</text>
+  
+  <!-- メインタイトル -->
+  <text x="600" y="300" class="title-text" font-size="48" font-weight="400" text-anchor="middle" fill="white">サンプル記事タイトル</text>
+  
+  <!-- サイト名 -->
+  <text x="600" y="420" class="subtitle-text" font-size="20" text-anchor="middle" fill="rgba(255,255,255,0.8)">創技 光のサイト</text>
+  
+  <!-- URL -->
+  <text x="600" y="520" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="rgba(255,255,255,0.6)">site.tukurugi.uk</text>
+</svg>

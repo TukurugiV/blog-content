@@ -1,0 +1,39 @@
+# CSS files
+*.css
+  Content-Type: text/css
+
+# JavaScript files
+*.js
+  Content-Type: application/javascript
+
+# Map files
+*.map
+  Content-Type: application/json
+
+# Font files
+*.woff
+  Content-Type: font/woff
+*.woff2
+  Content-Type: font/woff2
+*.ttf
+  Content-Type: font/ttf
+*.otf
+  Content-Type: font/otf
+
+# Image files
+*.svg
+  Content-Type: image/svg+xml
+*.png
+  Content-Type: image/png
+*.jpg
+  Content-Type: image/jpeg
+*.jpeg
+  Content-Type: image/jpeg
+*.webp
+  Content-Type: image/webp
+
+# Security headers
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

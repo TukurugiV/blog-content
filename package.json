@@ -1,0 +1,45 @@
+{
+  "name": "blog-content-template",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "ブログコンテンツリポジトリテンプレート - 記事管理とローカルプレビュー",
+  "scripts": {
+    "preview": "node scripts/preview-server.js",
+    "start": "node scripts/preview-server.js",
+    "preview:local": "node scripts/preview-server.js",
+    "new": "node scripts/createContent.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.859.0",
+    "@aws-sdk/s3-request-presigner": "^3.859.0",
+    "chokidar": "^4.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "fs-extra": "^11.3.0",
+    "gray-matter": "^4.0.3",
+    "katex": "^0.16.22",
+    "multer": "^2.0.2",
+    "rehype-katex": "^7.0.1",
+    "rehype-stringify": "^10.0.1",
+    "remark-directive": "^4.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0",
+    "uuid": "^11.1.0"
+  },
+  "keywords": [
+    "blog",
+    "content",
+    "markdown",
+    "astro",
+    "preview",
+    "r2",
+    "cloudflare"
+  ],
+  "author": "創技 光",
+  "license": "MIT"
+}

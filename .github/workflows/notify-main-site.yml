@@ -18,20 +18,20 @@ jobs:
     steps:
       - name: Notify main repository
         run: |
-          echo "🔔 Notifying main site repository about content updates..."
+          echo "Notifying main site repository about content updates..."
           
           # 設定確認
           if [ -z "${{ secrets.MAIN_REPO_TOKEN }}" ]; then
-            echo "❌ MAIN_REPO_TOKEN is not set"
+            echo "ERROR: MAIN_REPO_TOKEN is not set"
             exit 1
           fi
           
           if [ -z "${{ secrets.MAIN_REPO_OWNER }}" ] || [ -z "${{ secrets.MAIN_REPO_NAME }}" ]; then
-            echo "❌ MAIN_REPO_OWNER or MAIN_REPO_NAME is not set"
+            echo "ERROR: MAIN_REPO_OWNER or MAIN_REPO_NAME is not set"
             exit 1
           fi
           
-          echo "📍 Target repository: ${{ secrets.MAIN_REPO_OWNER }}/${{ secrets.MAIN_REPO_NAME }}"
+          echo "Target repository: ${{ secrets.MAIN_REPO_OWNER }}/${{ secrets.MAIN_REPO_NAME }}"
           
           # 一時ファイルを使用してレスポンスを分離
           temp_response=$(mktemp)
@@ -57,24 +57,24 @@ jobs:
             }')
           
           # レスポンス内容を表示（デバッグ用）
-          echo "🔍 HTTP Status Code: $http_code"
+          echo "HTTP Status Code: $http_code"
           if [ -s "$temp_response" ]; then
-            echo "📄 Response Body:"
+            echo "Response Body:"
             cat "$temp_response"
           fi
           
           # HTTPステータスコードをチェック
           if [ "$http_code" -eq 204 ]; then
-            echo "✅ Repository dispatch sent successfully"
+            echo "SUCCESS: Repository dispatch sent successfully"
           elif [ "$http_code" -eq 401 ]; then
-            echo "❌ Authentication failed. Check MAIN_REPO_TOKEN permissions."
-            echo "   Required scopes: repo (or public_repo for public repositories)"
+            echo "ERROR: Authentication failed. Check MAIN_REPO_TOKEN permissions."
+            echo "Required scopes: repo (or public_repo for public repositories)"
             exit 1
           elif [ "$http_code" -eq 404 ]; then
-            echo "❌ Repository not found. Check MAIN_REPO_OWNER and MAIN_REPO_NAME."
+            echo "ERROR: Repository not found. Check MAIN_REPO_OWNER and MAIN_REPO_NAME."
             exit 1
           else
-            echo "❌ Failed to send repository dispatch. HTTP status: $http_code"
+            echo "ERROR: Failed to send repository dispatch. HTTP status: $http_code"
             exit 1
           fi
           
@@ -84,7 +84,7 @@ jobs:
       - name: Alternative webhook notification (optional)
         run: |
           if [ -n "$WEBHOOK_URL" ]; then
-            echo "📡 Sending webhook notification..."
+            echo "Sending webhook notification..."
             curl -X POST "$WEBHOOK_URL" \
               -H "Content-Type: application/json" \
               -d '{
@@ -95,14 +95,14 @@ jobs:
                 "timestamp": "${{ github.event.head_commit.timestamp }}"
               }'
           else
-            echo "📡 Webhook URL not configured, skipping webhook notification"
+            echo "INFO: Webhook URL not configured, skipping webhook notification"
           fi
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
       
       - name: Log completion
         run: |
-          echo "✅ Content update notification sent successfully!"
-          echo "📦 Repository: ${{ github.repository }}"
-          echo "📝 Commit: ${{ github.sha }}"
-          echo "💬 Message: ${{ github.event.head_commit.message }}"
+          echo "SUCCESS: Content update notification sent successfully!"
+          echo "Repository: ${{ github.repository }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Message: ${{ github.event.head_commit.message }}"

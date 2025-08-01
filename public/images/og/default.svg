@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <!-- 背景グラデーション -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- パターン -->
+    <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/>
+    </pattern>
+    
+    <!-- フォント読み込み（Adobe Fonts） -->
+    <style>
+      @import url('https://use.typekit.net/scm4ijj.css');
+      .title-text { 
+        font-family: 'kozuka-gothic-pr6n', sans-serif; 
+        font-weight: 400; 
+        font-style: normal; 
+      }
+      .subtitle-text { 
+        font-family: 'kozuka-gothic-pr6n', sans-serif; 
+        font-weight: 400; 
+        font-style: normal; 
+      }
+    </style>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#dots)" opacity="0.3"/>
+  
+  <!-- デコレーション要素 -->
+  <circle cx="150" cy="150" r="80" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="1050" cy="480" r="100" fill="rgba(255,255,255,0.03)"/>
+  <rect x="0" y="0" width="1200" height="4" fill="rgba(255,255,255,0.2)"/>
+  <rect x="0" y="626" width="1200" height="4" fill="rgba(255,255,255,0.2)"/>
+  
+  <!-- ミニアイコン -->
+  <rect x="80" y="80" width="60" height="60" rx="12" fill="rgba(255,255,255,0.9)"/>
+  <text x="110" y="120" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" fill="#667eea">光</text>
+  
+  <!-- メインテキスト -->
+  <text x="600" y="280" class="title-text" font-size="56" font-weight="400" text-anchor="middle" fill="white">創技 光のサイト</text>
+  <text x="600" y="340" class="subtitle-text" font-size="24" text-anchor="middle" fill="rgba(255,255,255,0.9)">創技 光が色々とするサイト</text>
+  
+  <!-- URL -->
+  <text x="600" y="500" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="rgba(255,255,255,0.7)">site.tukurugi.uk</text>
+</svg>
