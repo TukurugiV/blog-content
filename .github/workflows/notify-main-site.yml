@@ -1,0 +1,57 @@
+name: Notify Main Site of Content Updates
+
+# メインブランチへのpush時に実行
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'blog/**'
+      - 'news/**' 
+      - 'events/**'
+      - 'config/**'
+      - 'images/**'
+
+jobs:
+  notify-main-site:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Notify main repository
+        run: |
+          echo "🔔 Notifying main site repository about content updates..."
+          
+          # メインリポジトリにrepository_dispatchイベントを送信
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.MAIN_REPO_TOKEN }}" \
+            https://api.github.com/repos/${{ secrets.MAIN_REPO_OWNER }}/${{ secrets.MAIN_REPO_NAME }}/dispatches \
+            -d '{
+              "event_type":"content-updated",
+              "client_payload":{
+                "repository":"${{ github.repository }}",
+                "sha":"${{ github.sha }}",
+                "ref":"${{ github.ref }}",
+                "timestamp":"${{ github.event.head_commit.timestamp }}"
+              }
+            }'
+            
+      - name: Alternative webhook notification
+        if: ${{ secrets.WEBHOOK_URL }}
+        run: |
+          echo "📡 Sending webhook notification..."
+          curl -X POST "${{ secrets.WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "event": "content-updated",
+              "repository": "${{ github.repository }}",
+              "commit": "${{ github.sha }}",
+              "message": "${{ github.event.head_commit.message }}",
+              "timestamp": "${{ github.event.head_commit.timestamp }}"
+            }'
+      
+      - name: Log completion
+        run: |
+          echo "✅ Content update notification sent successfully!"
+          echo "📦 Repository: ${{ github.repository }}"
+          echo "📝 Commit: ${{ github.sha }}"
+          echo "💬 Message: ${{ github.event.head_commit.message }}"
