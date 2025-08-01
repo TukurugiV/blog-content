@@ -38,7 +38,5 @@ coverAlt: ""
 informatioin
 :::
 
-:::audio
-file=1443693892_001-1754087235793-495bdfcd.wav
-name=1443693892_001-1754087235793-495bdfcd.wav
+:::audio {file="1443693892_001-1754087235793-495bdfcd.wav" name="1443693892_001-1754087235793-495bdfcd.wav"}
 :::
