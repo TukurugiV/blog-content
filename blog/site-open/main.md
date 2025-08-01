@@ -1,7 +1,7 @@
 ---
 title: "サイトを作ったよ という話"
 description: "創技 光がサイトを作ったのでそれについてそっと話す"
-pubDate: 2025-08-01-20:00:00
+pubDate: "YYYY-MM-DD"
 author: "創技 光"
 tags: ["自己紹介","ブログについて"]
 draft: false
@@ -33,8 +33,4 @@ coverAlt: ""
 [イベントページ](https://site.tukurugi.uk/events/)でイベント一覧が出てきます．
 配信について等様々なイベントについて書いていきます．
 
-:::audio
-file=1443693892_001-1754087235793-495bdfcd.wav
-name=1443693892_001.wav
-:::
 
