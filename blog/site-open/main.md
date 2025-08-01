@@ -34,3 +34,6 @@ coverAlt: ""
 配信について等様々なイベントについて書いていきます．
 
 
+:::info
+informatioin
+:::
