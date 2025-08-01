@@ -21,7 +21,7 @@ jobs:
           echo "🔔 Notifying main site repository about content updates..."
           
           # メインリポジトリにrepository_dispatchイベントを送信
-          curl -X POST \
+          response=$(curl -w "%{http_code}" -s -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.MAIN_REPO_TOKEN }}" \
             https://api.github.com/repos/${{ secrets.MAIN_REPO_OWNER }}/${{ secrets.MAIN_REPO_NAME }}/dispatches \
@@ -33,21 +33,34 @@ jobs:
                 "ref":"${{ github.ref }}",
                 "timestamp":"${{ github.event.head_commit.timestamp }}"
               }
-            }'
+            }')
+          
+          # レスポンスコードをチェック
+          if [ "$response" -eq 204 ]; then
+            echo "✅ Repository dispatch sent successfully"
+          else
+            echo "❌ Failed to send repository dispatch. HTTP status: $response"
+            exit 1
+          fi
             
-      - name: Alternative webhook notification
-        if: ${{ secrets.WEBHOOK_URL }}
+      - name: Alternative webhook notification (optional)
         run: |
-          echo "📡 Sending webhook notification..."
-          curl -X POST "${{ secrets.WEBHOOK_URL }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "event": "content-updated",
-              "repository": "${{ github.repository }}",
-              "commit": "${{ github.sha }}",
-              "message": "${{ github.event.head_commit.message }}",
-              "timestamp": "${{ github.event.head_commit.timestamp }}"
-            }'
+          if [ -n "$WEBHOOK_URL" ]; then
+            echo "📡 Sending webhook notification..."
+            curl -X POST "$WEBHOOK_URL" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "event": "content-updated",
+                "repository": "${{ github.repository }}",
+                "commit": "${{ github.sha }}",
+                "message": "${{ github.event.head_commit.message }}",
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }'
+          else
+            echo "📡 Webhook URL not configured, skipping webhook notification"
+          fi
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
       
       - name: Log completion
         run: |
