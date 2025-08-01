@@ -7,9 +7,9 @@ on:
     paths:
       - 'blog/**'
       - 'news/**' 
-      - 'events/**'
       - 'config/**'
-      - 'images/**'
+      - 'public/images/**'
+      - 'scripts/**'
 
 jobs:
   notify-main-site:

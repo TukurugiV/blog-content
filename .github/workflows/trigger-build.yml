@@ -3,9 +3,11 @@ on:
   push:
     branches: [main]
     paths:
-      - '**.md'
-      - 'images/**'
+      - 'blog/**/*.md'
+      - 'news/**/*.md'
+      - 'public/images/**'
       - 'config/**'
+      - 'scripts/**'
   workflow_dispatch:  # 手動実行も可能
 
 jobs:
@@ -20,9 +22,11 @@ jobs:
         uses: tj-actions/changed-files@v44
         with:
           files: |
-            **.md
-            images/**
+            blog/**/*.md
+            news/**/*.md
+            public/images/**
             config/**
+            scripts/**
 
       - name: List changed files
         if: steps.changed-files.outputs.any_changed == 'true'
