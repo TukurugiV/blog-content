@@ -31,9 +31,4 @@ coverAlt: ""
 
 ### イベント
 [イベントページ](https://site.tukurugi.uk/events/)でイベント一覧が出てきます．
-配信についてや
-
-
-:::info
-test info block
-:::
+配信について等様々なイベントについて書いていきます．
