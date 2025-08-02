@@ -77,4 +77,4 @@ name=サンプルファイル
 
 ## まとめ
 
-以上がテストです v1.0.6 - workflow debug test
+以上がテストです v1.0.7 - workflow debug test
