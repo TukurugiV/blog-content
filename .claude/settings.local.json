@@ -12,7 +12,8 @@
       "Bash(taskkill:*)",
       "Bash(timeout 10 npm run preview)",
       "Bash(find:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(node:*)"
     ],
     "deny": []
   }

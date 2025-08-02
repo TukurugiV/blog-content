@@ -64,10 +64,7 @@ function hello() {
 ```
 
 #### ダウンロード
-:::download
-file=sample.pdf
-name=サンプルファイル
-:::
+:::download file=ExamSD_2024-1754140414659-0332bc37.pdf name=ExamSD_2024.pdf :::
 
 #### オーディオ
 
@@ -77,4 +74,4 @@ name=サンプルファイル
 
 ## まとめ
 
-以上がテストです v1.0.9 - workflow debug test
+以上がテストです v1.1.0 - workflow debug test
