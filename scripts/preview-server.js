@@ -30,8 +30,21 @@ const PORT = 3001;
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 200 * 1024 * 1024, // 200MB limit
+    fileSize: 1024 * 1024 * 1024, // 1.0GB limit
   },
+  fileFilter: (req, file, cb) => {
+    // 日本語ファイル名のエンコーディングを正規化
+    if (file.originalname) {
+      // Buffer.from で適切にデコードしてからUTF-8で再エンコード
+      try {
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+      } catch (error) {
+        // エンコーディングエラーの場合はそのまま使用
+        console.warn('File encoding warning:', error.message);
+      }
+    }
+    cb(null, true);
+  }
 });
 
 // Middleware
@@ -681,6 +694,39 @@ app.get('/', (req, res) => {
     let currentCollection = 'blog';
     let currentSlug = null;
     
+    // 安全なクリップボードアクセス関数
+    async function copyToClipboard(text) {
+      try {
+        // モダンブラウザでHTTPS環境の場合
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+        
+        // フォールバック: execCommand（非推奨だが互換性のため）
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        if (successful) {
+          return true;
+        }
+        
+        throw new Error('クリップボードアクセスに失敗しました');
+      } catch (error) {
+        console.warn('Clipboard access failed:', error);
+        return false;
+      }
+    }
+    
     async function loadContent() {
       try {
         const response = await fetch(\`/api/content/\${currentCollection}\`);
@@ -741,7 +787,7 @@ app.get('/', (req, res) => {
       }
     }
     
-    function copyFileMarkdown(url, name, type) {
+    async function copyFileMarkdown(url, name, type) {
       let markdown;
       if (type === 'images') {
         markdown = \`![alt text](\${url})\`;
@@ -751,9 +797,13 @@ app.get('/', (req, res) => {
         markdown = \`:::audio{file="\${url.split('/').pop()}" name="\${name}"}\\n:::\`;
       }
       
-      navigator.clipboard.writeText(markdown).then(() => {
+      const success = await copyToClipboard(markdown);
+      if (success) {
         alert('Markdownをクリップボードにコピーしました！');
-      });
+      } else {
+        // クリップボードアクセスに失敗した場合、テキストをアラートで表示
+        alert(\`Markdownをクリップボードにコピーできませんでした。\\n以下をコピーしてください：\\n\\n\${markdown}\`);
+      }
     }
     
     function switchTab(tab) {
@@ -797,11 +847,11 @@ app.get('/', (req, res) => {
           
           if (result.success) {
             // アップロード成功時にマークダウンをクリップボードにコピー
-            if (navigator.clipboard) {
-              await navigator.clipboard.writeText(result.markdown);
+            const clipboardSuccess = await copyToClipboard(result.markdown);
+            if (clipboardSuccess) {
               alert(\`ファイルがアップロードされました！\\nマークダウン形式をクリップボードにコピーしました：\\n\\n\${result.markdown}\`);
             } else {
-              alert(\`ファイルがアップロードされました！\\nマークダウン形式：\\n\\n\${result.markdown}\`);
+              alert(\`ファイルがアップロードされました！\\nマークダウン形式（手動でコピーしてください）：\\n\\n\${result.markdown}\`);
             }
             
             // ファイル一覧を更新

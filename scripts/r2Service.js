@@ -23,6 +23,19 @@ const r2Client = new S3Client({
 });
 
 /**
+ * ファイル名を安全にエンコードする
+ */
+function sanitizeFileName(fileName) {
+  // 日本語文字を含むファイル名をURLエンコード
+  const encoded = encodeURIComponent(fileName);
+  // ファイルシステムで問題となる文字を置換
+  return encoded
+    .replace(/[<>:"/\\|?*]/g, '_')
+    .replace(/\s+/g, '_')
+    .substring(0, 200); // ファイル名の長さ制限
+}
+
+/**
  * ファイルをCloudflare R2にアップロード
  */
 export async function uploadToR2(fileBuffer, originalName, mimeType, category = 'files') {
@@ -32,7 +45,10 @@ export async function uploadToR2(fileBuffer, originalName, mimeType, category = 
     const baseName = path.basename(originalName, fileExtension);
     const timestamp = Date.now();
     const hash = crypto.createHash('md5').update(fileBuffer).digest('hex').substring(0, 8);
-    const fileName = `${baseName}-${timestamp}-${hash}${fileExtension}`;
+    
+    // 日本語ファイル名に対応したファイル名生成
+    const sanitizedBaseName = sanitizeFileName(baseName);
+    const fileName = `${sanitizedBaseName}-${timestamp}-${hash}${fileExtension}`;
     
     // カテゴリ別のキー（パス）を設定
     const key = `${category}/${fileName}`;
@@ -91,16 +107,22 @@ export async function listR2Files(category = null) {
       return [];
     }
     
-    return result.Contents.map(item => ({
-      name: path.basename(item.Key),
-      key: item.Key,
-      size: formatFileSize(item.Size),
-      lastModified: item.LastModified,
-      url: R2_CONFIG.publicUrl 
-        ? `${R2_CONFIG.publicUrl}/${item.Key}`
-        : `https://pub-${R2_CONFIG.accountId}.r2.dev/${item.Key}`,
-      category: item.Key.split('/')[0]
-    })).sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
+    return result.Contents.map(item => {
+      const fileName = path.basename(item.Key);
+      // URLエンコードされたファイル名をデコード
+      const decodedName = decodeURIComponent(fileName).replace(/_/g, ' ');
+      
+      return {
+        name: decodedName,
+        key: item.Key,
+        size: formatFileSize(item.Size),
+        lastModified: item.LastModified,
+        url: R2_CONFIG.publicUrl 
+          ? `${R2_CONFIG.publicUrl}/${item.Key}`
+          : `https://pub-${R2_CONFIG.accountId}.r2.dev/${item.Key}`,
+        category: item.Key.split('/')[0]
+      };
+    }).sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
   } catch (error) {
     console.error('Error listing R2 files:', error);
     return [];
