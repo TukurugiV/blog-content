@@ -64,7 +64,8 @@ function hello() {
 ```
 
 #### ダウンロード
-:::download{file="ExamSD_2024-1754140414659-0332bc37.pdf" name="ExamSD_2024.pdf"}:::
+:::download{file="ExamSD_2024-1754140414659-0332bc37.pdf" name="ExamSD_2024.pdf"}
+:::
 
 #### オーディオ
 
