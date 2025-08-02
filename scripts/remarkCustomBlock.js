@@ -23,13 +23,29 @@ function constructR2Url(filename, category) {
 
 export function remarkCustomBlocks() {
   return (tree) => {
+    // デバッグ: 全てのノードタイプを確認
+    visit(tree, (node) => {
+      if (node.type === 'containerDirective') {
+        console.log('Found containerDirective node:', node);
+      }
+      // テキストノードでdirectiveがあるかも確認
+      if (node.type === 'paragraph' && node.children) {
+        const hasAudio = node.children.some(child => 
+          child.type === 'text' && child.value && child.value.includes(':::audio')
+        );
+        if (hasAudio) {
+          console.log('Found paragraph with :::audio text:', node);
+        }
+      }
+    });
+    
     visit(tree, "containerDirective", (node) => {
       const data = node.data || (node.data = {});
       const tagName = node.name;
       const attributes = node.attributes || {};
       
       // 全体的なデバッグログ（必要に応じてコメントアウト）
-      // console.log('Processing directive:', tagName, 'with attributes:', attributes);
+      console.log('Processing directive:', tagName, 'with attributes:', attributes);
 
       // 基本的なコンテナ（info, warning, danger, success）
       if (['info', 'warning', 'danger', 'success'].includes(tagName)) {
@@ -136,8 +152,8 @@ export function remarkCustomBlocks() {
       // オーディオ再生
       else if (tagName === 'audio') {
         // デバッグ用ログ（必要に応じてコメントアウト）
-        // console.log('Audio directive attributes:', attributes);
-        // console.log('File attribute:', attributes.file);
+        console.log('Audio directive attributes:', attributes);
+        console.log('File attribute:', attributes.file);
         
         const file = attributes.file;
         const name = attributes.name || file || 'Unknown Audio';
@@ -197,6 +213,45 @@ export function remarkCustomBlocks() {
         data.hProperties = {
           className: ["custom-block", `custom-block-${tagName}`],
         };
+      }
+    });
+    
+    // フォールバック: remark-directiveが動作していない場合の処理
+    visit(tree, "paragraph", (node) => {
+      if (node.children && node.children.length === 1 && node.children[0].type === 'text') {
+        const text = node.children[0].value;
+        // 構文1: :::audio file="..." name="..." :::
+        const audioMatch1 = text.match(/^:::audio\s+file="([^"]+)"(?:\s+name="([^"]+)")?\s*:::$/m);
+        // 構文2: :::audio{file="..." name="..."} :::
+        const audioMatch2 = text.match(/^:::audio\{file="([^"]+)"(?:\s+name="([^"]+)")?\}\s*:::$/m);
+        
+        const audioMatch = audioMatch1 || audioMatch2;
+        
+        if (audioMatch) {
+          console.log('Found audio directive in paragraph text:', audioMatch);
+          const file = audioMatch[1];
+          const name = audioMatch[2];
+          
+          // paragraphノードをaudio blockに変換
+          node.type = 'html';
+          node.value = `
+            <div class="audio-block">
+              <div class="audio-player">
+                <div class="audio-info">
+                  <div class="audio-icon">🎵</div>
+                  <div class="audio-name">${name || file}</div>
+                </div>
+                <audio controls preload="metadata">
+                  <source src="https://files.tukurugi.uk/audio/${file}" type="audio/mpeg">
+                  <source src="https://files.tukurugi.uk/audio/${file}" type="audio/wav">
+                  <source src="https://files.tukurugi.uk/audio/${file}" type="audio/ogg">
+                  お使いのブラウザはオーディオ要素をサポートしていません。
+                </audio>
+              </div>
+            </div>
+          `;
+          delete node.children;
+        }
       }
     });
     

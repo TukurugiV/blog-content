@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join, resolve } from 'path';
@@ -82,45 +81,24 @@ app.get('/api/content/:collection', (req, res) => {
   }
   
   try {
-    const items = fs.readdirSync(collectionPath, { withFileTypes: true });
-    const files = [];
-    
-    console.log(`Debug: Collection ${collection} contains:`, items.map(i => i.name));
-    
-    for (const item of items) {
-      if (item.isFile() && item.name.endsWith('.md')) {
-        // Old format: direct .md files
-        const filePath = join(collectionPath, item.name);
+    const files = fs.readdirSync(collectionPath)
+      .filter(file => file.endsWith('.md'))
+      .map(file => {
+        const filePath = join(collectionPath, file);
         const content = fs.readFileSync(filePath, 'utf8');
         const { data, content: body } = matter(content);
-        const slug = item.name.replace('.md', '');
+        const slug = file.replace('.md', '');
         
-        files.push({
+        return {
           slug,
           data,
           body,
           path: filePath
-        });
-      } else if (item.isDirectory()) {
-        // New format: directory with main.md
-        const mainPath = join(collectionPath, item.name, 'main.md');
-        if (fs.existsSync(mainPath)) {
-          const content = fs.readFileSync(mainPath, 'utf8');
-          const { data, content: body } = matter(content);
-          
-          files.push({
-            slug: item.name,
-            data,
-            body,
-            path: mainPath
-          });
-        }
-      }
-    }
+        };
+      })
+      .sort((a, b) => new Date(b.data.pubDate) - new Date(a.data.pubDate));
     
-    const sortedFiles = files.sort((a, b) => new Date(b.data.pubDate) - new Date(a.data.pubDate));
-    
-    res.json(sortedFiles);
+    res.json(files);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -128,25 +106,11 @@ app.get('/api/content/:collection', (req, res) => {
 
 app.get('/api/content/:collection/:slug', async (req, res) => {
   const { collection, slug } = req.params;
-  
-  console.log(`Debug: Looking for article ${collection}/${slug}`);
-  
-  // Try new format first (directory with main.md)
-  let filePath = join(contentDir, collection, slug, 'main.md');
-  console.log(`Debug: Trying new format: ${filePath}`);
-  
-  // Fall back to old format (direct .md file)
-  if (!fs.existsSync(filePath)) {
-    filePath = join(contentDir, collection, `${slug}.md`);
-    console.log(`Debug: Trying old format: ${filePath}`);
-  }
+  const filePath = join(contentDir, collection, `${slug}.md`);
   
   if (!fs.existsSync(filePath)) {
-    console.log(`Debug: File not found: ${filePath}`);
     return res.status(404).json({ error: 'File not found' });
   }
-  
-  console.log(`Debug: Found file: ${filePath}`);
   
   try {
     const content = fs.readFileSync(filePath, 'utf8');
@@ -286,7 +250,7 @@ app.post('/api/upload/:type', upload.single('file'), async (req, res) => {
       if (type === 'downloads' || category === 'downloads') {
         markdown = `:::download\nfile=${uploadResult.fileName}\nname=${file.originalname}\n:::`;
       } else if (type === 'audio' || category === 'audio') {
-        markdown = `:::audio\nfile=${uploadResult.fileName}\nname=${file.originalname}\n:::`;
+        markdown = `:::audio{file="${uploadResult.fileName}" name="${file.originalname}"}\n:::`;
       } else if (category === 'images') {
         markdown = `![${file.originalname}](${uploadResult.url})`;
       } else {
@@ -311,7 +275,7 @@ app.post('/api/upload/:type', upload.single('file'), async (req, res) => {
       if (type === 'downloads') {
         markdown = `:::download\nfile=uploaded-file.${mockExtension}\nname=${file.originalname}\n:::`;
       } else if (type === 'audio') {
-        markdown = `:::audio\nfile=uploaded-file.${mockExtension}\nname=${file.originalname}\n:::`;
+        markdown = `:::audio{file="uploaded-file.${mockExtension}" name="${file.originalname}"}\n:::`;
       } else {
         markdown = `![${file.originalname}](${mockUrl})`;
       }
@@ -783,7 +747,7 @@ app.get('/', (req, res) => {
       } else if (type === 'downloads') {
         markdown = \`:::download\\nfile=\${url.split('/').pop()}\\nname=\${name}\\n:::\`;
       } else if (type === 'audio') {
-        markdown = \`:::audio\\nfile=\${url.split('/').pop()}\\nname=\${name}\\n:::\`;
+        markdown = \`:::audio{file="\${url.split('/').pop()}" name="\${name}"}\\n:::\`;
       }
       
       navigator.clipboard.writeText(markdown).then(() => {
