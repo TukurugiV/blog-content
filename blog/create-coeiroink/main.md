@@ -73,5 +73,6 @@ Google Colab Proを1ヵ月だけ契約しました．
 出来たので配布しちゃいます．
 VTuberとかだとワンコメを使えばコメント読み上げに仕えます．
 後いろいろ使えると思います！
-:::download{file=e1980d5e-10bd-4d38-a498-a9072fd97ee3.zip name=創技 光-MYCOEIROINK.zip}
+利用規約はファイルの中にあるので読んで使ってくださいね！
+:::download{file="30acf129-59a1-4111-a76b-2a071d5b381d.zip" name="創技 光-MYCOEIROINK.zip"}
 :::
