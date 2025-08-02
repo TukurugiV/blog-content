@@ -38,12 +38,6 @@ draft: false
 これは成功ブロックです。
 :::
 
-#### 画像スライダー
-:::slider
-![画像1](./image1.jpg)
-![画像2](./image2.jpg)
-![画像3](./image3.jpg)
-:::
 
 #### 数式
 インライン数式: $E = mc^2$
@@ -62,18 +56,6 @@ function hello() {
   console.log("Hello, World!");
 }
 ```
-
-#### ダウンロード
-:::download
-file=sample.pdf
-name=サンプルファイル
-:::
-
-#### オーディオ
-:::audio
-file=sample.mp3
-name=サンプル音声
-:::
 
 ## まとめ
 
