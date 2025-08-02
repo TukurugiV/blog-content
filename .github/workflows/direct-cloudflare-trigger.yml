@@ -1,0 +1,72 @@
+name: Direct Cloudflare Pages Trigger
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'blog/**/*.md'
+      - 'news/**/*.md'
+      - 'events/**/*.md'
+      - 'public/images/**'
+      - 'config/**'
+  workflow_dispatch:
+
+jobs:
+  trigger-cloudflare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout content repository
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            blog/**/*.md
+            news/**/*.md
+            events/**/*.md
+            public/images/**
+            config/**
+
+      - name: Trigger Blog System Build (repository_dispatch)
+        if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          repository: TukurugiV/blog-system
+          event-type: content-updated
+          client-payload: |
+            {
+              "content_repo": "${{ github.repository }}",
+              "content_ref": "${{ github.ref }}",
+              "content_sha": "${{ github.sha }}",
+              "pusher": "${{ github.actor }}",
+              "changed_files": "${{ steps.changed-files.outputs.all_changed_files }}",
+              "timestamp": "${{ github.event.head_commit.timestamp }}"
+            }
+
+      - name: Wait for blog-system workflow
+        if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Waiting 30 seconds for blog-system workflow to start..."
+          sleep 30
+
+      - name: Alternative - Direct Cloudflare webhook (if repository_dispatch fails)
+        if: (steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch') && vars.CLOUDFLARE_WEBHOOK_URL
+        run: |
+          echo "Triggering Cloudflare webhook as backup..."
+          curl -X POST "${{ vars.CLOUDFLARE_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "content-update",
+              "repository": "${{ github.repository }}",
+              "commit": "${{ github.sha }}",
+              "changed_files": "${{ steps.changed-files.outputs.all_changed_files }}"
+            }' || echo "Cloudflare webhook failed (this is optional)"
+            
+      - name: Notify completion
+        if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          echo "✅ Build triggers sent!"
+          echo "🔗 Blog system: https://site.tukurugi.uk"
+          echo "📊 Monitor at: https://github.com/TukurugiV/blog-system/actions"
