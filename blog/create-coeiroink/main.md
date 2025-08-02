@@ -65,7 +65,11 @@ Google Colab Proを1ヵ月だけ契約しました．
 ### 完成！
 学習時間によって出来具合的なのが1~100段階であるんですが，100までできました！
 それがこちら
-:::audio{file="mycoevoice-1754150693797-5956c0cf.wav" name="mycoevoice.wav"}
+:::audio{file="4fee7d8e-401e-48a6-93c9-c6f6d82f5602.wav" name="SampleVoice1"}
+:::
+:::audio{file="928eb605-f4f2-4cac-81be-8544501924ce.wav" name="SampleVoice2"}
+:::
+:::audio{file="1f420540-929d-476b-8d07-9e8e97e33dfa.wav" name="SampleVoice3"}
 :::
 結構私っぽい声じゃないでしょうか．
 
