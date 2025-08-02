@@ -1,7 +1,7 @@
 ---
 title: "New Blog Post"
 description: "Blog post description"
-pubDate: 2025-08-02T01:03:28.016Z
+pubDate: 2025-08-02-00:00:00
 author: "創技 光"
 tags: []
 draft: false
