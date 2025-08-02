@@ -211,9 +211,7 @@ function hello() {
 これは==重要な内容==です。
 
 ### ダウンロード
-:::download
-file=sample.pdf
-name=サンプルファイル
+:::download{file="sample.pdf" name="サンプルファイル"}
 :::
 
 ### オーディオ
@@ -262,7 +260,7 @@ app.post('/api/upload/:type', upload.single('file'), async (req, res) => {
       // マークダウン用のテキストを生成
       let markdown;
       if (type === 'downloads' || category === 'downloads') {
-        markdown = `:::download\nfile=${uploadResult.fileName}\nname=${file.originalname}\n:::`;
+        markdown = `:::download{file="${uploadResult.fileName}" name="${file.originalname}"}\n:::`;
       } else if (type === 'audio' || category === 'audio') {
         markdown = `:::audio{file="${uploadResult.fileName}" name="${file.originalname}"}\n:::`;
       } else if (category === 'images') {
@@ -287,7 +285,7 @@ app.post('/api/upload/:type', upload.single('file'), async (req, res) => {
       
       let markdown;
       if (type === 'downloads') {
-        markdown = `:::download\nfile=uploaded-file.${mockExtension}\nname=${file.originalname}\n:::`;
+        markdown = `:::download{file="uploaded-file.${mockExtension}" name="${file.originalname}"}\n:::`;
       } else if (type === 'audio') {
         markdown = `:::audio{file="uploaded-file.${mockExtension}" name="${file.originalname}"}\n:::`;
       } else {
@@ -792,7 +790,7 @@ app.get('/', (req, res) => {
       if (type === 'images') {
         markdown = \`![alt text](\${url})\`;
       } else if (type === 'downloads') {
-        markdown = \`:::download\\nfile=\${url.split('/').pop()}\\nname=\${name}\\n:::\`;
+        markdown = \`:::download{file="\${url.split('/').pop()}" name="\${name}"}\\n:::\`;
       } else if (type === 'audio') {
         markdown = \`:::audio{file="\${url.split('/').pop()}" name="\${name}"}\\n:::\`;
       }

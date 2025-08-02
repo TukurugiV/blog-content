@@ -1,7 +1,8 @@
-import { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import crypto from 'crypto';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 // Cloudflare R2 configuration
 const R2_CONFIG = {
@@ -23,32 +24,14 @@ const r2Client = new S3Client({
 });
 
 /**
- * ファイル名を安全にエンコードする
- */
-function sanitizeFileName(fileName) {
-  // 日本語文字を含むファイル名をURLエンコード
-  const encoded = encodeURIComponent(fileName);
-  // ファイルシステムで問題となる文字を置換
-  return encoded
-    .replace(/[<>:"/\\|?*]/g, '_')
-    .replace(/\s+/g, '_')
-    .substring(0, 200); // ファイル名の長さ制限
-}
-
-/**
  * ファイルをCloudflare R2にアップロード
  */
 export async function uploadToR2(fileBuffer, originalName, mimeType, category = 'files') {
   try {
-    // ファイル名を生成（重複を避けるためハッシュを使用）
+    // UUIDでファイル名を生成（拡張子のみ保持）
     const fileExtension = path.extname(originalName);
-    const baseName = path.basename(originalName, fileExtension);
-    const timestamp = Date.now();
-    const hash = crypto.createHash('md5').update(fileBuffer).digest('hex').substring(0, 8);
-    
-    // 日本語ファイル名に対応したファイル名生成
-    const sanitizedBaseName = sanitizeFileName(baseName);
-    const fileName = `${sanitizedBaseName}-${timestamp}-${hash}${fileExtension}`;
+    const uuid = uuidv4();
+    const fileName = `${uuid}${fileExtension}`;
     
     // カテゴリ別のキー（パス）を設定
     const key = `${category}/${fileName}`;
@@ -60,6 +43,11 @@ export async function uploadToR2(fileBuffer, originalName, mimeType, category = 
       ContentType: mimeType,
       // パブリックアクセス可能にする
       ACL: 'public-read',
+      // 元のファイル名をメタデータとして保存
+      Metadata: {
+        'original-name': encodeURIComponent(originalName),
+        'upload-timestamp': new Date().toISOString()
+      }
     });
     
     console.log(`Uploading file to R2: ${key}`);
@@ -107,22 +95,49 @@ export async function listR2Files(category = null) {
       return [];
     }
     
-    return result.Contents.map(item => {
-      const fileName = path.basename(item.Key);
-      // URLエンコードされたファイル名をデコード
-      const decodedName = decodeURIComponent(fileName).replace(/_/g, ' ');
-      
-      return {
-        name: decodedName,
-        key: item.Key,
-        size: formatFileSize(item.Size),
-        lastModified: item.LastModified,
-        url: R2_CONFIG.publicUrl 
-          ? `${R2_CONFIG.publicUrl}/${item.Key}`
-          : `https://pub-${R2_CONFIG.accountId}.r2.dev/${item.Key}`,
-        category: item.Key.split('/')[0]
-      };
-    }).sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
+    // 各ファイルのメタデータを取得して元のファイル名を復元
+    const filePromises = result.Contents.map(async (item) => {
+      try {
+        // HeadObjectCommandでメタデータを取得
+        const headCommand = new HeadObjectCommand({
+          Bucket: R2_CONFIG.bucketName,
+          Key: item.Key,
+        });
+        const headResult = await r2Client.send(headCommand);
+        
+        // メタデータから元のファイル名を取得
+        const originalName = headResult.Metadata && headResult.Metadata['original-name'] 
+          ? decodeURIComponent(headResult.Metadata['original-name'])
+          : path.basename(item.Key); // フォールバック
+        
+        return {
+          name: originalName,
+          key: item.Key,
+          size: formatFileSize(item.Size),
+          lastModified: item.LastModified,
+          url: R2_CONFIG.publicUrl 
+            ? `${R2_CONFIG.publicUrl}/${item.Key}`
+            : `https://pub-${R2_CONFIG.accountId}.r2.dev/${item.Key}`,
+          category: item.Key.split('/')[0]
+        };
+      } catch (error) {
+        console.warn(`Failed to get metadata for ${item.Key}:`, error.message);
+        // メタデータ取得に失敗した場合はUUIDファイル名をそのまま使用
+        return {
+          name: path.basename(item.Key),
+          key: item.Key,
+          size: formatFileSize(item.Size),
+          lastModified: item.LastModified,
+          url: R2_CONFIG.publicUrl 
+            ? `${R2_CONFIG.publicUrl}/${item.Key}`
+            : `https://pub-${R2_CONFIG.accountId}.r2.dev/${item.Key}`,
+          category: item.Key.split('/')[0]
+        };
+      }
+    });
+    
+    const files = await Promise.all(filePromises);
+    return files.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
   } catch (error) {
     console.error('Error listing R2 files:', error);
     return [];
