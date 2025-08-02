@@ -1,5 +1,26 @@
 import { visit } from "unist-util-visit";
 
+/**
+ * R2の直接URLを構築する
+ * @param {string} filename - ファイル名
+ * @param {string} category - カテゴリ (downloads, audio, etc.)
+ * @returns {string} R2の直接URL
+ */
+function constructR2Url(filename, category) {
+  // 環境変数からR2設定を取得
+  const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL;
+  const R2_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
+  
+  if (R2_PUBLIC_URL) {
+    return `${R2_PUBLIC_URL}/${category}/${filename}`;
+  } else if (R2_ACCOUNT_ID) {
+    return `https://pub-${R2_ACCOUNT_ID}.r2.dev/${category}/${filename}`;
+  } else {
+    // フォールバック: デフォルトのパブリックURL構造を仮定
+    return `https://pub-example.r2.dev/${category}/${filename}`;
+  }
+}
+
 export function remarkCustomBlocks() {
   return (tree) => {
     visit(tree, "containerDirective", (node) => {
@@ -59,11 +80,21 @@ export function remarkCustomBlocks() {
       // ファイルダウンロード
       else if (tagName === 'download') {
         const file = attributes.file;
-        const name = attributes.name || file;
+        const name = attributes.name || file || 'Unknown File';
         const url = attributes.url; // オプションでURL指定可能
         
-        // ファイルパスを構築（URLが指定されていない場合はR2パスを想定）
-        const downloadUrl = url || (file.startsWith('http') ? file : `/api/file/downloads/${file}`);
+        // ファイルパスを構築（URLが指定されていない場合はR2の直接URLを構築）
+        let downloadUrl;
+        if (url) {
+          downloadUrl = url;
+        } else if (file && file.startsWith('http')) {
+          downloadUrl = file;
+        } else if (file) {
+          downloadUrl = constructR2Url(file, 'downloads');
+        } else {
+          // ファイルが指定されていない場合はエラー表示
+          downloadUrl = '#';
+        }
         
         data.hName = "div";
         data.hProperties = {
@@ -74,7 +105,7 @@ export function remarkCustomBlocks() {
           type: 'paragraph',
           children: [{
             type: 'html',
-            value: `
+            value: file ? `
               <div class="download-container">
                 <div class="download-icon">📁</div>
                 <div class="download-info">
@@ -86,6 +117,14 @@ export function remarkCustomBlocks() {
                   <span class="download-arrow">⬇️</span>
                 </a>
               </div>
+            ` : `
+              <div class="download-container error">
+                <div class="download-icon">⚠️</div>
+                <div class="download-info">
+                  <div class="download-name">エラー: ファイルが指定されていません</div>
+                  <div class="download-file">:::download file="filename.pdf" name="表示名" の形式で指定してください</div>
+                </div>
+              </div>
             `
           }]
         }];
@@ -94,11 +133,21 @@ export function remarkCustomBlocks() {
       // オーディオ再生
       else if (tagName === 'audio') {
         const file = attributes.file;
-        const name = attributes.name || file;
+        const name = attributes.name || file || 'Unknown Audio';
         const url = attributes.url; // オプションでURL指定可能
         
-        // ファイルパスを構築（URLが指定されていない場合はR2パスを想定）
-        const audioUrl = url || (file.startsWith('http') ? file : `/api/file/audio/${file}`);
+        // ファイルパスを構築（URLが指定されていない場合はR2の直接URLを構築）
+        let audioUrl;
+        if (url) {
+          audioUrl = url;
+        } else if (file && file.startsWith('http')) {
+          audioUrl = file;
+        } else if (file) {
+          audioUrl = constructR2Url(file, 'audio');
+        } else {
+          // ファイルが指定されていない場合はエラー表示
+          audioUrl = '#';
+        }
         
         data.hName = "div";
         data.hProperties = {
@@ -109,7 +158,7 @@ export function remarkCustomBlocks() {
           type: 'paragraph',
           children: [{
             type: 'html',
-            value: `
+            value: file ? `
               <div class="audio-player">
                 <div class="audio-info">
                   <div class="audio-icon">🎵</div>
@@ -121,6 +170,14 @@ export function remarkCustomBlocks() {
                   <source src="${audioUrl}" type="audio/ogg">
                   お使いのブラウザはオーディオ要素をサポートしていません。
                 </audio>
+              </div>
+            ` : `
+              <div class="audio-player error">
+                <div class="audio-info">
+                  <div class="audio-icon">⚠️</div>
+                  <div class="audio-name">エラー: オーディオファイルが指定されていません</div>
+                </div>
+                <div class="audio-error">:::audio file="filename.mp3" name="表示名" の形式で指定してください</div>
               </div>
             `
           }]
