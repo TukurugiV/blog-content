@@ -16,8 +16,8 @@ function constructR2Url(filename, category) {
   } else if (R2_ACCOUNT_ID) {
     return `https://pub-${R2_ACCOUNT_ID}.r2.dev/${category}/${filename}`;
   } else {
-    // フォールバック: デフォルトのパブリックURL構造を仮定
-    return `https://pub-example.r2.dev/${category}/${filename}`;
+    // カスタムドメインのフォールバック
+    return `https://files.tukurugi.uk/${category}/${filename}`;
   }
 }
 
@@ -27,6 +27,9 @@ export function remarkCustomBlocks() {
       const data = node.data || (node.data = {});
       const tagName = node.name;
       const attributes = node.attributes || {};
+      
+      // 全体的なデバッグログ（必要に応じてコメントアウト）
+      // console.log('Processing directive:', tagName, 'with attributes:', attributes);
 
       // 基本的なコンテナ（info, warning, danger, success）
       if (['info', 'warning', 'danger', 'success'].includes(tagName)) {
@@ -132,6 +135,10 @@ export function remarkCustomBlocks() {
       
       // オーディオ再生
       else if (tagName === 'audio') {
+        // デバッグ用ログ（必要に応じてコメントアウト）
+        // console.log('Audio directive attributes:', attributes);
+        // console.log('File attribute:', attributes.file);
+        
         const file = attributes.file;
         const name = attributes.name || file || 'Unknown Audio';
         const url = attributes.url; // オプションでURL指定可能
