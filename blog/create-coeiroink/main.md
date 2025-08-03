@@ -1,7 +1,7 @@
 ---
 title: "MYCOEIROINKを使って自分の人工音声を作った話"
 description: "MYCOEIROINKNを使って自分の人工音声を作ってみたのでその体験談と配布"
-pubDate: 2025-08-03-12:00:00
+pubDate: 2025-08-03-14:00:00
 author: "創技 光"
 tags: ["技術","COEIROINK","人工音声"]
 draft: false
