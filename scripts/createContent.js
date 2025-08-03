@@ -223,7 +223,8 @@ async function createSeries(seriesId) {
     
     await fs.writeJSON(path.join(seriesDir, 'series.json'), seriesConfig, { spaces: 2 });
     
-    // README.md を作成
+    // README.md は Astro content collection と競合するため作成しない
+    // 代わりに .guide.md として作成
     const readmeContent = `# ${seriesConfig.name}
 
 ${seriesConfig.description}
@@ -235,7 +236,7 @@ ${seriesConfig.description}
 \`\`\`
 ${seriesId}/
 ├── series.json          # シリーズ設定
-├── README.md           # このファイル
+├── .guide.md           # このファイル（Astroが処理しない）
 ├── 01-first-post/      # 第1回の記事
 │   ├── main.md
 │   └── cover.png
@@ -264,7 +265,7 @@ npm run new new::series-post ${seriesId}/post-name
 - \`order\`: シリーズ一覧での表示順序
 `;
     
-    await fs.writeFile(path.join(seriesDir, 'README.md'), readmeContent);
+    await fs.writeFile(path.join(seriesDir, '.guide.md'), readmeContent);
     
     console.log('✅ シリーズが正常に作成されました！');
     console.log('');
@@ -413,7 +414,7 @@ async function createContent() {
     // 記事ファイルを作成
     await fs.writeFile(articlePath, frontmatter);
     
-    // README.mdも作成（画像やファイル管理のガイド用）
+    // .guide.md を作成（README.md はAstro content collectionと競合するため避ける）
     const readmeContent = `# ${template.title}
 
 この記事用のファイル管理ディレクトリです。
@@ -459,7 +460,7 @@ name=音声タイトル
 \`\`\`
 `;
     
-    await fs.writeFile(path.join(articleDir, 'README.md'), readmeContent);
+    await fs.writeFile(path.join(articleDir, '.guide.md'), readmeContent);
     
     console.log('✅ 記事が正常に作成されました！');
     console.log('');

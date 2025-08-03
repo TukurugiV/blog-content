@@ -1,17 +1,17 @@
 ---
-title: "Second"
-description: "C Languageシリーズの記事"
-pubDate: 2026-08-03T16:10:25.958Z
+title: "Introduction"
+description: "My Tutorial Seriesシリーズの記事"
+pubDate: 2026-08-03T16:24:11.805Z
 author: "創技 光"
-tags: ["c-language", "シリーズ"]
+tags: ["my-tutorial-series", "シリーズ"]
 draft: false
 cover: "./cover.png"
-coverAlt: "Secondのカバー画像"
+coverAlt: "Introductionのカバー画像"
 ---
 
-# Second
+# Introduction
 
-C Languageシリーズの記事です。
+My Tutorial Seriesシリーズの記事です。
 
 ## 概要
 
