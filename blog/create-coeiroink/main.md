@@ -5,7 +5,7 @@ pubDate: 2025-08-03-14:00:00
 author: "創技 光"
 tags: ["技術","COEIROINK","人工音声"]
 draft: false
-coverImage: "./coverImage.png"
+cover: "./coverImage.png"
 ---
 
 ## 人工音声を作ろうと思った
