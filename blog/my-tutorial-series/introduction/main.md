@@ -1,7 +1,7 @@
 ---
 title: "Introduction"
 description: "My Tutorial Seriesシリーズの記事"
-pubDate: 2026-08-03T16:24:11.805Z
+pubDate: 2025-08-03T16:24:11.805Z
 author: "創技 光"
 tags: ["my-tutorial-series", "シリーズ"]
 draft: false
@@ -34,3 +34,4 @@ My Tutorial Seriesシリーズの記事です。
 ## 次回予告
 
 次回は...について解説します。
+ 
