@@ -1,17 +1,17 @@
 ---
-title: "Introduction"
-description: "My Tutorial Seriesシリーズの記事"
-pubDate: 2025-08-03T16:24:11.805Z
+title: "Basic"
+description: "C言語シリーズシリーズの記事"
+pubDate: 2025-08-03T17:12:40.024Z
 author: "創技 光"
-tags: ["my-tutorial-series", "シリーズ"]
+tags: ["c-language", "シリーズ"]
 draft: false
 cover: "./cover.png"
-coverAlt: "Introductionのカバー画像"
+coverAlt: "Basicのカバー画像"
 ---
 
-# Introduction
+# Basic
 
-My Tutorial Seriesシリーズの記事です。
+C言語シリーズシリーズの記事です。
 
 ## 概要
 
@@ -34,4 +34,3 @@ My Tutorial Seriesシリーズの記事です。
 ## 次回予告
 
 次回は...について解説します。
- 
