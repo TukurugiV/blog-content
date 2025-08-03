@@ -43,8 +43,6 @@ draft: false
 
 https://www.youtube.com/watch?v=YgjQnrMu6rw
 
-https://x.com/Tukurugi_V/status/1889992929873207761
-
 ## ハイライト
 ==ハイライト==
 
