@@ -146,38 +146,6 @@ $$
 # /images/blog/post-slug/image.jpg
 ```
 
-## 7. フロントマター拡張
-
-### ブログ記事
-
-```yaml
----
-title: "記事タイトル"
-description: "記事の説明"
-pubDate: 2024-01-15
-updatedDate: 2024-01-16  # 任意
-author: "著者名"          # デフォルト: "創技 光"
-tags: ["tag1", "tag2"]   # デフォルト: []
-draft: false             # デフォルト: false
-cover: "cover-image.jpg" # 任意
-coverAlt: "代替テキスト"   # 任意
-seriesId: "series-name"  # 任意 - シリーズ機能用
-seriesNumber: 1          # 任意 - シリーズ内の順序
----
-```
-
-### イベント記事
-
-ブログの基本フィールドに加えて：
-
-```yaml
----
-eventDate: 2024-01-15      # 必須
-eventEndDate: 2024-01-16   # 任意
-location: "イベント会場"    # 任意
----
-```
-
 ## 8. HTMLオーディオ拡張
 
 標準の `<audio>` タグも自動的にカスタムプレイヤーに変換されます。
@@ -186,16 +154,6 @@ location: "イベント会場"    # 任意
 <audio src="path/to/audio.mp3" controls></audio>
 ```
 
-## 9. シリーズ機能
-
-記事をシリーズとしてグループ化できます。
-
-```yaml
----
-seriesId: "tutorial-series"  # シリーズID
-seriesNumber: 1              # シリーズ内の順序
----
-```
 
 ## 10. レスポンシブ対応
 
@@ -205,16 +163,6 @@ seriesNumber: 1              # シリーズ内の順序
 - ダークモード対応（オーディオプレイヤーなど）
 - キーボードナビゲーション対応
 - 適切なARIAラベルとセマンティックHTML
-
-## 使用例
-
-```markdown
----
-title: "カスタム記法の使用例"
-description: "ブログシステムのオリジナル記法を使った記事"
-pubDate: 2024-01-15
-tags: ["tutorial", "markdown"]
----
 
 # カスタム記法の使用例
 
