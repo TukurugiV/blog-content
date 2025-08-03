@@ -6,7 +6,6 @@ author: "創技 光"
 tags: ["自己紹介","ブログについて"]
 draft: false
 cover: "./og-001.png"
-coverAlt: "ogp画像"
 ---
 
 # サイトを公開しました
