@@ -1,7 +1,7 @@
 ---
 title: "このサイトオリジナルの表現コンテンツ"
 description: "このサイトのためにオリジナルで作った表現方法"
-pubDate: 2025-08-03T17:27:56.391Z
+pubDate: 2026-08-03T17:27:56.391Z
 author: "創技 光"
 tags: ["markdown"]
 draft: false
